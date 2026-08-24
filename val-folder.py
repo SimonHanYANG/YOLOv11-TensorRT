@@ -1,15 +1,18 @@
-'''
+"""
 Author: SimonHanYANG SimonCK666@163.com
 Date: 2025-07-19 08:58:46
 LastEditors: SimonHanYANG SimonCK666@163.com
 LastEditTime: 2025-08-02 11:07:48
 FilePath: /yolo-V8/val.py
-Description: val code
-'''
-from ultralytics import YOLO
-import os
-import time
+Description: val code.
+"""
+
 import glob
+import os
+import sys
+import time
+
+from ultralytics import YOLO
 
 # 加载模型
 model = YOLO("/home/simon/yolo-V11/runs/train/weights/best.pt")
@@ -33,7 +36,7 @@ for ext in image_extensions:
 total_images = len(image_paths)
 if total_images == 0:
     print(f"错误：在 {input_folder} 中没有找到图片文件")
-    exit()
+    sys.exit()
 
 print(f"找到 {total_images} 张图片，开始处理...")
 
@@ -43,22 +46,16 @@ processing_times = []
 # 处理每张图片并记录时间
 for img_path in image_paths:
     img_name = os.path.basename(img_path)
-    
+
     # 测量处理时间
     start_time = time.time()
-    result = model.predict(
-        source=img_path,
-        save=True,
-        save_txt=True,
-        project=output_folder,
-        name="predictions"
-    )
+    result = model.predict(source=img_path, save=True, save_txt=True, project=output_folder, name="predictions")
     end_time = time.time()
-    
+
     # 计算处理时间（毫秒）
     processing_time_ms = (end_time - start_time) * 1000
     processing_times.append(processing_time_ms)
-    
+
     print(f"图片 {img_name} 处理完成 - 用时: {processing_time_ms:.2f} ms")
 
 # 计算性能指标
